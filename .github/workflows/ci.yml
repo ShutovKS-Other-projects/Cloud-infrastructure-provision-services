@@ -45,5 +45,5 @@ jobs:
             cd $(basename "${{ github.repository }}")
             git pull origin main
             cd lab-5
-            docker-compose pull web
-            docker-compose up -d
+            docker compose pull web
+            docker compose up -d
