@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd flask-docker-lab
+            cd $(basename -s .git `git config --get remote.origin.url` | tr ' ' '-')
             git pull origin main
             cd lab-5
             docker-compose pull web
