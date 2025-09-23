@@ -1,0 +1,18 @@
+Vagrant.configure("2") do |config|
+  # "бокс" (образ системы)
+  config.vm.box = "bento/ubuntu-24.04"
+  config.vm.box_version = "202508.03.0"
+
+  # Настройки сети: порт 8080 на порт 80 в ВМ
+  config.vm.hostname = "vm.localhost"
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Настройка общих папок.
+  config.vm.synced_folder ".", "/vagrant", disabled: false
+
+  # Parallels в качестве провайдера
+  config.vm.provider "parallels" do |p|
+    p.memory = 1024
+    p.cpus = 2
+  end
+end
