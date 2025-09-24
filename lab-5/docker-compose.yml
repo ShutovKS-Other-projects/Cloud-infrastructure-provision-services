@@ -18,10 +18,19 @@ services:
     image: nginx:latest
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx:/etc/nginx/conf.d
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
     depends_on:
       - web
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
 
   db:
     image: postgres:13
@@ -37,3 +46,5 @@ services:
 
 volumes:
   postgres_data:
+  certbot_conf:
+  certbot_www:
