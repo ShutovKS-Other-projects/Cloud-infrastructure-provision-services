@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_caching import Cache
+from prometheus_flask_exporter import PrometheusMetrics
 import os
 import time
 import socket
@@ -16,7 +17,6 @@ cache_config = {
     "CACHE_DEFAULT_TIMEOUT": 300
 }
 app.config.from_mapping(cache_config)
-cache = Cache(app)
 
 db_user = os.environ.get('POSTGRES_USER')
 db_password = os.environ.get('POSTGRES_PASSWORD')
@@ -28,6 +28,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+cache = Cache(app)
+metrics = PrometheusMetrics(app)
+
+@app.route('/health')
+def health_check():
+    return jsonify(status="OK"), 200
 
 @app.route('/report')
 @cache.cached(timeout=30)

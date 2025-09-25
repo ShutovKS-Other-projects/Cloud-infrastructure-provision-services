@@ -5,3 +5,4 @@ Flask-Migrate
 redis
 Flask-Caching
 pytest
+prometheus-flask-exporter
