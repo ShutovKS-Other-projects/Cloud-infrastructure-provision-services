@@ -45,5 +45,9 @@ jobs:
             cd $(basename "${{ github.repository }}")
             git pull origin main
             cd lab-5
+            git fetch origin
+            git reset --hard origin/main
+            git clean -fd
+            git pull origin main
             docker compose pull web
             docker compose up -d
