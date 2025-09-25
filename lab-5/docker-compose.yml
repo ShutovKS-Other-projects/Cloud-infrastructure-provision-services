@@ -15,6 +15,11 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=flask_db
       - REDIS_HOST=redis
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://127.0.0.1:5000"
+        tag: "flask-app"
     depends_on:
       - db
       - redis
@@ -30,6 +35,31 @@ services:
       - certbot_www:/var/www/certbot
     depends_on:
       - web
+
+  elasticsearch:
+    image: elasticsearch:7.9.3
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  logstash:
+    image: logstash:7.9.3
+    ports:
+      - "5000:5000/udp"
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:7.9.3
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
 
   prometheus:
     image: prom/prometheus:latest
@@ -70,3 +100,4 @@ volumes:
   certbot_conf:
   certbot_www:
   grafana_data:
+  es_data:
