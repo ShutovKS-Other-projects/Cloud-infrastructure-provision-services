@@ -35,6 +35,11 @@ metrics = PrometheusMetrics(app)
 def health_check():
     return jsonify(status="OK"), 200
 
+@app.route('/error')
+def trigger_error():
+    result = 1 / 0
+    return None
+
 @app.route('/report')
 @cache.cached(timeout=30)
 def get_report():
