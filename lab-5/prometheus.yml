@@ -1,7 +1,12 @@
 global:
   scrape_interval: 15s
+  evaluation_interval: 15s
 
 scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
   - job_name: 'flask_app'
     metrics_path: /metrics
     docker_sd_configs:
@@ -13,7 +18,12 @@ scrape_configs:
       - source_labels: [__meta_docker_container_label_com_docker_compose_service]
         regex: web
         action: keep
-      - source_labels: [__address__]
+
+      - source_labels: [__meta_docker_network_ip]
         target_label: __address__
-        regex: '(.*):\d+'
-        replacement: '$1:5001'
+        replacement: '${1}:5001'
+
+      - source_labels: [__meta_docker_container_name]
+        target_label: instance
+        regex: '/(.*)'
+        replacement: '$1'
