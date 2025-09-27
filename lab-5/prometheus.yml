@@ -3,10 +3,12 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
+  # Метрики самого Prometheus
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
 
+  # Метрики всех web-контейнеров
   - job_name: 'flask_app'
     metrics_path: /metrics
     docker_sd_configs:
@@ -15,14 +17,17 @@ scrape_configs:
           - name: "name"
             values: ["web"]
     relabel_configs:
+      # Оставляем только контейнеры от сервиса web
       - source_labels: [__meta_docker_container_label_com_docker_compose_service]
         regex: web
         action: keep
 
+      # Заменяем адрес на внутренний IP + порт 5001
       - source_labels: [__meta_docker_network_ip]
         target_label: __address__
         replacement: '${1}:5001'
 
+      # Чтобы в Prometheus видно было контейнеры по имени
       - source_labels: [__meta_docker_container_name]
         target_label: instance
         regex: '/(.*)'

@@ -50,4 +50,6 @@ jobs:
             git clean -fd
             git pull origin main
             docker compose pull web
-            docker compose up -d --force-recreate 
+            # docker compose up -d --force-recreate 
+            docker stack rm myapp
+            docker stack deploy -c docker-compose.yml myapp
