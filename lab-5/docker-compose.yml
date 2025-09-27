@@ -104,3 +104,8 @@ volumes:
   certbot_www:
   grafana_data:
   es_data:
+
+networks:
+  default:
+    driver: overlay
+    attachable: true
