@@ -42,15 +42,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd $(basename "${{ github.repository }}")
-            git pull origin main
-            cd lab-5
+            cd $(basename "${{ github.repository }}")/lab-5
+
             git fetch origin
             git reset --hard origin/main
-            git clean -fd
-            git pull origin main
-            docker compose pull web
+
+            # docker compose pull web
             # docker compose up -d --force-recreate 
-            docker stack rm myapp
-            sleep 10
-            docker stack deploy -c docker-compose.yml myapp
+            docker stack deploy --compose-file docker-compose.yml --with-registry-auth myapp
