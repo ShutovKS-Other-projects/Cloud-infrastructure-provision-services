@@ -50,3 +50,4 @@ jobs:
             # docker compose pull web
             # docker compose up -d --force-recreate 
             docker stack deploy --compose-file docker-compose.yml --with-registry-auth myapp
+            docker service update --force myapp_web
